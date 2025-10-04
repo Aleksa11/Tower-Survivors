@@ -1,0 +1,61 @@
+# Godot 4+ specific ignores
+.godot/
+.import/
+
+# Mono-specific ignores
+.mono/
+.obj/
+.bin/
+.vs/
+
+# C# / .NET specific
+*.csproj.user
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options
+.vs/
+
+# System/OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Godot-specific
+*.translation
+
+# Build exports
+*.apk
+*.aab
+*.ipa
+*.x86_64
+*.exe
+*.pck
