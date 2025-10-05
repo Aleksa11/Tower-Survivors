@@ -8,9 +8,13 @@ namespace TowerSurvivors
     {
         private HBoxContainer _cardsContainer;
         private List<TowerCard> _cards = new List<TowerCard>();
+        private TowerCard _selectedCard = null;
 
         [Signal]
         public delegate void TowerPurchasedEventHandler(string towerType, int cost);
+
+        [Signal]
+        public delegate void SelectionCancelledEventHandler();
 
         public override void _Ready()
         {
@@ -23,20 +27,44 @@ namespace TowerSurvivors
             // Panel at bottom of screen
             var panel = new Panel();
             panel.SetAnchorsPreset(Control.LayoutPreset.BottomWide);
-            panel.OffsetTop = -200;
+            panel.OffsetTop = -160;
             AddChild(panel);
 
-            // Background
+            // Background with gradient effect - darker and more premium
             var background = new ColorRect();
             background.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-            background.Color = new Color(0.1f, 0.1f, 0.15f, 0.9f);
+            background.Color = new Color(0.05f, 0.06f, 0.08f, 0.98f);
             panel.AddChild(background);
 
-            // Cards container
+            // Top border accent with glow effect
+            var topBorder = new ColorRect();
+            topBorder.SetAnchorsPreset(Control.LayoutPreset.TopWide);
+            topBorder.CustomMinimumSize = new Vector2(0, 4);
+            topBorder.Color = new Color(0.4f, 0.7f, 1.0f, 0.9f);
+            panel.AddChild(topBorder);
+
+            // Add subtle top glow
+            var topGlow = new ColorRect();
+            topGlow.SetAnchorsPreset(Control.LayoutPreset.TopWide);
+            topGlow.Position = new Vector2(0, 4);
+            topGlow.CustomMinimumSize = new Vector2(0, 20);
+            topGlow.Color = new Color(0.2f, 0.4f, 0.6f, 0.15f);
+            panel.AddChild(topGlow);
+
+            // Container to center and distribute cards
+            var centerContainer = new CenterContainer();
+            centerContainer.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+            centerContainer.OffsetLeft = 5;
+            centerContainer.OffsetTop = 5;
+            centerContainer.OffsetRight = -5;
+            centerContainer.OffsetBottom = -5;
+            panel.AddChild(centerContainer);
+
+            // Cards container with alignment
             _cardsContainer = new HBoxContainer();
-            _cardsContainer.Position = new Vector2(20, 10);
-            _cardsContainer.AddThemeConstantOverride("separation", 15);
-            panel.AddChild(_cardsContainer);
+            _cardsContainer.Alignment = BoxContainer.AlignmentMode.Center;
+            _cardsContainer.AddThemeConstantOverride("separation", 4);
+            centerContainer.AddChild(_cardsContainer);
         }
 
         private void CreateTowerCards()
@@ -73,7 +101,52 @@ namespace TowerSurvivors
 
         private void OnCardClicked(TowerCard card)
         {
+            // If clicking the same card, cancel selection
+            if (_selectedCard == card)
+            {
+                CancelSelection();
+                return;
+            }
+
+            // Select new card
+            _selectedCard = card;
+            UpdateCardVisuals();
+
             EmitSignal(SignalName.TowerPurchased, card.TowerType, card.Cost);
+        }
+
+        public void CancelSelection()
+        {
+            _selectedCard = null;
+            UpdateCardVisuals();
+            EmitSignal(SignalName.SelectionCancelled);
+        }
+
+        private void UpdateCardVisuals()
+        {
+            if (_selectedCard == null)
+            {
+                // No selection - reset all cards to normal
+                foreach (var card in _cards)
+                {
+                    card.ResetVisuals();
+                }
+            }
+            else
+            {
+                // Something selected - highlight selected, dim others
+                foreach (var card in _cards)
+                {
+                    if (card == _selectedCard)
+                    {
+                        card.SetSelected(true);
+                    }
+                    else
+                    {
+                        card.SetSelected(false);
+                    }
+                }
+            }
         }
 
         public void UpdateAffordability(int currentGold)

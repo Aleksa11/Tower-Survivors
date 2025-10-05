@@ -28,13 +28,31 @@ namespace TowerSurvivors
 			// XP Bar at the very top
 			CreateXPBar();
 
-			// Main game HUD container
-			var hudContainer = new VBoxContainer();
-			hudContainer.Position = new Vector2(20, 70);
-			hudContainer.MouseFilter = Control.MouseFilterEnum.Ignore; // CRITICAL: Let clicks pass through
-			AddChild(hudContainer);
+			// Main game HUD container with background panel
+			var hudPanel = new Panel();
+			hudPanel.Position = new Vector2(15, 75);
+			hudPanel.CustomMinimumSize = new Vector2(230, 160);
+			hudPanel.MouseFilter = Control.MouseFilterEnum.Ignore;
+			AddChild(hudPanel);
 
-			// Health display
+			// Panel background with premium styling
+			var panelBg = new StyleBoxFlat();
+			panelBg.BgColor = new Color(0.05f, 0.06f, 0.08f, 0.85f);
+			panelBg.BorderColor = new Color(0.3f, 0.5f, 0.7f, 0.6f);
+			panelBg.SetBorderWidthAll(2);
+			panelBg.CornerRadiusTopLeft = 8;
+			panelBg.CornerRadiusTopRight = 8;
+			panelBg.CornerRadiusBottomLeft = 8;
+			panelBg.CornerRadiusBottomRight = 8;
+			hudPanel.AddThemeStyleboxOverride("panel", panelBg);
+
+			var hudContainer = new VBoxContainer();
+			hudContainer.Position = new Vector2(10, 10);
+			hudContainer.AddThemeConstantOverride("separation", 8);
+			hudContainer.MouseFilter = Control.MouseFilterEnum.Ignore;
+			hudPanel.AddChild(hudContainer);
+
+			// Health display with outline
 			var healthContainer = new HBoxContainer();
 			hudContainer.AddChild(healthContainer);
 
@@ -42,42 +60,50 @@ namespace TowerSurvivors
 			healthLabelTitle.Text = "HP: ";
 			healthLabelTitle.AddThemeColorOverride("font_color", Colors.White);
 			healthLabelTitle.AddThemeFontSizeOverride("font_size", 24);
+			healthLabelTitle.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.8f));
+			healthLabelTitle.AddThemeConstantOverride("outline_size", 3);
 			healthContainer.AddChild(healthLabelTitle);
 
 			_healthLabel = new Label();
 			_healthLabel.Text = "100/100";
 			_healthLabel.AddThemeColorOverride("font_color", Colors.LightGreen);
 			_healthLabel.AddThemeFontSizeOverride("font_size", 24);
+			_healthLabel.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.8f));
+			_healthLabel.AddThemeConstantOverride("outline_size", 3);
 			healthContainer.AddChild(_healthLabel);
 
-			// Health bar
+			// Health bar with better styling
 			_healthBar = new ProgressBar();
-			_healthBar.CustomMinimumSize = new Vector2(200, 30);
+			_healthBar.CustomMinimumSize = new Vector2(200, 32);
 			_healthBar.MaxValue = 100;
 			_healthBar.Value = 100;
 			_healthBar.ShowPercentage = false;
 			hudContainer.AddChild(_healthBar);
 
-			// Wave display
+			// Wave display with better styling
 			_waveLabel = new Label();
 			_waveLabel.Text = "Wave: 0";
-			_waveLabel.AddThemeColorOverride("font_color", Colors.White);
+			_waveLabel.AddThemeColorOverride("font_color", new Color(0.8f, 0.9f, 1.0f));
 			_waveLabel.AddThemeFontSizeOverride("font_size", 24);
+			_waveLabel.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.8f));
+			_waveLabel.AddThemeConstantOverride("outline_size", 3);
 			hudContainer.AddChild(_waveLabel);
 
-			// Gold display
+			// Gold display with better contrast
 			var goldContainer = new HBoxContainer();
 			hudContainer.AddChild(goldContainer);
 
 			var goldIcon = new Label();
 			goldIcon.Text = "💰 ";
-			goldIcon.AddThemeFontSizeOverride("font_size", 24);
+			goldIcon.AddThemeFontSizeOverride("font_size", 26);
 			goldContainer.AddChild(goldIcon);
 
 			_goldLabel = new Label();
 			_goldLabel.Text = "100";
-			_goldLabel.AddThemeColorOverride("font_color", Colors.Gold);
-			_goldLabel.AddThemeFontSizeOverride("font_size", 24);
+			_goldLabel.AddThemeColorOverride("font_color", new Color(1.0f, 0.85f, 0.1f));
+			_goldLabel.AddThemeFontSizeOverride("font_size", 26);
+			_goldLabel.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.9f));
+			_goldLabel.AddThemeConstantOverride("outline_size", 3);
 			goldContainer.AddChild(_goldLabel);
 
 			// Game Over screen
@@ -92,33 +118,45 @@ namespace TowerSurvivors
 			// Container for XP bar at top
 			var xpContainer = new VBoxContainer();
 			xpContainer.Position = new Vector2(10, 10);
-			xpContainer.CustomMinimumSize = new Vector2(700, 50);
-			xpContainer.MouseFilter = Control.MouseFilterEnum.Ignore; // CRITICAL: Let clicks pass through
+			xpContainer.CustomMinimumSize = new Vector2(700, 60);
+			xpContainer.MouseFilter = Control.MouseFilterEnum.Ignore;
 			AddChild(xpContainer);
 
-			// Label
+			// Label with better styling
 			_xpLabel = new Label();
 			_xpLabel.Text = "⚡ LEVEL UP IN: 30s";
 			_xpLabel.HorizontalAlignment = HorizontalAlignment.Center;
-			_xpLabel.AddThemeColorOverride("font_color", Colors.Gold);
-			_xpLabel.AddThemeFontSizeOverride("font_size", 20);
+			_xpLabel.AddThemeColorOverride("font_color", new Color(1.0f, 0.9f, 0.3f)); // Brighter gold
+			_xpLabel.AddThemeFontSizeOverride("font_size", 22);
+
+			// Add outline/shadow effect to label
+			_xpLabel.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.8f));
+			_xpLabel.AddThemeConstantOverride("outline_size", 4);
 			xpContainer.AddChild(_xpLabel);
 
-			// Progress bar
+			// Progress bar with better styling
 			_xpBar = new ProgressBar();
-			_xpBar.CustomMinimumSize = new Vector2(700, 25);
+			_xpBar.CustomMinimumSize = new Vector2(700, 30);
 			_xpBar.MaxValue = 1.0f;
 			_xpBar.Value = 0.0f;
 			_xpBar.ShowPercentage = false;
 
-			// Style the bar
+			// Style the bar with premium look
 			var styleBox = new StyleBoxFlat();
-			styleBox.BgColor = new Color(0.2f, 0.2f, 0.3f);
-			styleBox.BorderColor = new Color(1, 0.84f, 0);
+			styleBox.BgColor = new Color(0.1f, 0.1f, 0.15f, 0.9f);
+			styleBox.BorderColor = new Color(0.8f, 0.7f, 0.2f, 0.8f);
 			styleBox.SetBorderWidthAll(2);
+			styleBox.CornerRadiusTopLeft = 4;
+			styleBox.CornerRadiusTopRight = 4;
+			styleBox.CornerRadiusBottomLeft = 4;
+			styleBox.CornerRadiusBottomRight = 4;
 
 			var fillBox = new StyleBoxFlat();
-			fillBox.BgColor = new Color(1, 0.84f, 0, 0.8f);
+			fillBox.BgColor = new Color(1, 0.84f, 0, 0.9f);
+			fillBox.CornerRadiusTopLeft = 3;
+			fillBox.CornerRadiusTopRight = 3;
+			fillBox.CornerRadiusBottomLeft = 3;
+			fillBox.CornerRadiusBottomRight = 3;
 
 			xpContainer.AddChild(_xpBar);
 		}
@@ -187,9 +225,15 @@ namespace TowerSurvivors
 			victoryContainer.AddChild(_victoryRestartButton);
 		}
 
+		private int _previousHealth = 100;
+
 		public void UpdateHealth(int current, int max)
 		{
 			if (_healthLabel == null || _healthBar == null) return;
+
+			// Check if health decreased
+			bool healthDecreased = current < _previousHealth;
+			_previousHealth = current;
 
 			_healthLabel.Text = $"{current}/{max}";
 			_healthBar.MaxValue = max;
@@ -209,6 +253,14 @@ namespace TowerSurvivors
 			{
 				_healthBar.Modulate = Colors.Red;
 			}
+
+			// Add damage flash effect
+			if (healthDecreased)
+			{
+				var tween = CreateTween();
+				tween.TweenProperty(_healthLabel, "modulate", new Color(2.0f, 0.5f, 0.5f), 0.1f);
+				tween.TweenProperty(_healthLabel, "modulate", Colors.White, 0.3f);
+			}
 		}
 
 		public void UpdateWave(int wave)
@@ -220,7 +272,36 @@ namespace TowerSurvivors
 		public void UpdateGold(int gold)
 		{
 			if (_goldLabel == null) return;
+
+			// Get previous gold value
+			int previousGold = 0;
+			if (int.TryParse(_goldLabel.Text, out int parsed))
+			{
+				previousGold = parsed;
+			}
+
+			// Update text immediately
 			_goldLabel.Text = gold.ToString();
+
+			// Add visual feedback for changes
+			if (gold > previousGold)
+			{
+				// Gold increased - positive flash
+				var tween = CreateTween();
+				tween.TweenProperty(_goldLabel, "modulate", new Color(1.5f, 1.5f, 0.5f), 0.15f);
+				tween.TweenProperty(_goldLabel, "modulate", Colors.White, 0.3f);
+
+				// Scale pulse
+				tween.Parallel().TweenProperty(_goldLabel, "scale", new Vector2(1.2f, 1.2f), 0.15f);
+				tween.TweenProperty(_goldLabel, "scale", new Vector2(1.0f, 1.0f), 0.3f);
+			}
+			else if (gold < previousGold)
+			{
+				// Gold decreased - negative flash
+				var tween = CreateTween();
+				tween.TweenProperty(_goldLabel, "modulate", new Color(1.0f, 0.5f, 0.5f), 0.15f);
+				tween.TweenProperty(_goldLabel, "modulate", Colors.White, 0.3f);
+			}
 		}
 
 		public void UpdateXPBar(float progress, int currentXP, int xpToNext, int level)
